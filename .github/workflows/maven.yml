@@ -30,13 +30,14 @@ jobs:
           path: target/*.jar
 
       - name: Trivy FS Scan
-        run: trivy fs --format table -o trivy-fs-report.html .
+        run: |
+          trivy fs --format table -o trivy-fs-report.html .
 
-      - name: Run SonarQube analysis
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn sonar:sonar
 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
@@ -53,10 +54,12 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker Image
-        run: docker build -t shashankmittra/boardgame:latest .
+        run: |
+          docker build -t shashankmittra/boardgame:latest .
 
       - name: Trivy Image Scan
-        run: trivy image --format table -o trivy-image-report.html shashankmittra/boardgame:latest
+        run: |
+          trivy image --format table -o trivy-image-report.html shashankmittra/boardgame:latest
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -65,7 +68,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker Image
-        run: docker push shashankmittra/boardgame:latest
+        run: |
+          docker push shashankmittra/boardgame:latest
 
       - name: Kubectl Action
         uses: tale/kubectl-action@v1
