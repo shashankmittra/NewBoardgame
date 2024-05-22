@@ -2,33 +2,24 @@ package com.javaproject.controllers;
 
 import java.net.URI;
 import java.util.List;
-
-import org.apache.catalina.connector.Response;
-import org.hibernate.boot.model.relational.Database;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.javaproject.beans.BoardGame;
 import com.javaproject.beans.ErrorMessage;
-import com.javaproject.beans.Review;
 import com.javaproject.database.DatabaseAccess;
 
-// special type of controller that is specialized for REST purpose. It marshals our domain objects to and from json
 @RestController
 @RequestMapping("/boardgames")
 public class BoardGameController {
 
-    private DatabaseAccess da;
+    private final DatabaseAccess da;
 
     public BoardGameController(DatabaseAccess da) {
         this.da = da;
@@ -37,7 +28,7 @@ public class BoardGameController {
     /**
      * Retrieve all boardgames
      * 
-     * @return
+     * @return List of BoardGame
      */
     @GetMapping
     public List<BoardGame> getBoardGames() {
@@ -47,7 +38,7 @@ public class BoardGameController {
     /**
      * Handles requests for specific boardgame
      * 
-     * @param id
+     * @param id the ID of the board game
      * @return the ResponseEntity
      */
     @GetMapping("/{id}")
@@ -60,6 +51,12 @@ public class BoardGameController {
         }
     }
 
+    /**
+     * Adds a new board game
+     * 
+     * @param boardGame the board game to add
+     * @return the ResponseEntity
+     */
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> postBoardGame(@RequestBody BoardGame boardGame) {
         try {
@@ -70,6 +67,5 @@ public class BoardGameController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage("Name already exists."));
         }
-
     }
 }
