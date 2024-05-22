@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: boardgame
-          image: shashankmittra/boardgame:latest # Image that will be used to containers
+          image: shashankmittra/boardgame:latest # Image that will be used to container
           imagePullPolicy: Always
           ports:
             - containerPort: 8080 # The port that the container is running on in the
